@@ -49,19 +49,25 @@ app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
 var prisma = new client_1.PrismaClient();
 app.post("/registrarAssinatura", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var requiscaoModel, error_1;
+    var requiscaoModelAss, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                requiscaoModel = req.body;
+                requiscaoModelAss = req.body;
+                if (req.body.sec != process.env.SEC) {
+                    return [2 /*return*/, res.status(400).send({ result: "Algo falta no sistema" })];
+                }
+                else if (req.body.setor != "assinatura") {
+                    return [2 /*return*/, res.status(400).send({ result: "Setor Errado" })];
+                }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, 4, 5]);
                 return [4 /*yield*/, prisma.assinatura.create({
                         data: {
-                            assinatura_img: requiscaoModel.assinatura_img,
-                            notaFiscal: Number(requiscaoModel.notaFiscal),
-                            responsavel: requiscaoModel.responsavel
+                            assinatura_img: requiscaoModelAss.assinatura_img,
+                            notaFiscal: Number(requiscaoModelAss.notaFiscal),
+                            responsavel: requiscaoModelAss.responsavel
                         }
                     })];
             case 2:
@@ -79,28 +85,34 @@ app.post("/registrarAssinatura", function (req, res) { return __awaiter(void 0, 
     });
 }); });
 app.post("/registrarConfirmacao", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, cidade, entregaConcluida, motorista, notaFiscal, obs, error_2;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var requiscaoModelConfir, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _a = req.body, cidade = _a.cidade, entregaConcluida = _a.entregaConcluida, motorista = _a.motorista, notaFiscal = _a.notaFiscal, obs = _a.obs;
-                _b.label = 1;
+                requiscaoModelConfir = req.body;
+                if (req.body.sec != process.env.SEC) {
+                    return [2 /*return*/, res.status(400).send({ result: "Algo falta no sistema" })];
+                }
+                else if (req.body.setor != "confirmacao") {
+                    return [2 /*return*/, res.status(400).send({ result: "Setor Errado" })];
+                }
+                _a.label = 1;
             case 1:
-                _b.trys.push([1, 3, 4, 5]);
+                _a.trys.push([1, 3, 4, 5]);
                 return [4 /*yield*/, prisma.confirmacaoEntrega.create({
                         data: {
-                            cidade: cidade,
-                            entregaConcluida: entregaConcluida,
-                            motorista: motorista,
-                            notaFiscal: notaFiscal,
-                            obs: obs,
+                            cidade: requiscaoModelConfir.cidade,
+                            entregaConcluida: requiscaoModelConfir.entregaConcluida,
+                            motorista: requiscaoModelConfir.motorista,
+                            notaFiscal: Number(requiscaoModelConfir.notaFiscal),
+                            obs: requiscaoModelConfir.obs,
                         }
                     })];
             case 2:
-                _b.sent();
+                _a.sent();
                 return [3 /*break*/, 5];
             case 3:
-                error_2 = _b.sent();
+                error_2 = _a.sent();
                 res.status(400).send({ result: error_2 });
                 return [3 /*break*/, 5];
             case 4:
@@ -116,6 +128,12 @@ app.post("/registrarRetorno", function (req, res) { return __awaiter(void 0, voi
         switch (_b.label) {
             case 0:
                 _a = req.body, data = _a.data, hodometro = _a.hodometro, notaFiscal = _a.notaFiscal, obs = _a.obs, placa = _a.placa;
+                if (req.body.sec != process.env.SEC) {
+                    return [2 /*return*/, res.status(400).send({ result: "Algo falta no sistema" })];
+                }
+                else if (req.body.setor != "retorno") {
+                    return [2 /*return*/, res.status(400).send({ result: "Setor Errado" })];
+                }
                 _b.label = 1;
             case 1:
                 _b.trys.push([1, 3, 4, 5]);
@@ -123,7 +141,7 @@ app.post("/registrarRetorno", function (req, res) { return __awaiter(void 0, voi
                         data: {
                             data: data,
                             hodometro: hodometro,
-                            notaFiscal: notaFiscal,
+                            notaFiscal: Number(notaFiscal),
                             obs: obs,
                             placa: placa
                         }

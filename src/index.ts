@@ -13,14 +13,21 @@ app.use(bodyParser.json())
 const prisma = new PrismaClient()
 
 app.post("/registrarAssinatura", async (req: Request, res: Response) => {
-    const requiscaoModel: ModelAssinatura = req.body
+    const requiscaoModelAss: ModelAssinatura = req.body
+
+    if(req.body.sec != process.env.SEC) {
+        return res.status(400).send({result: "Algo falta no sistema"})
+    }else if (req.body.setor != "assinatura") {
+        return res.status(400).send({result: "Setor Errado"})
+    }
+
     //PROCESSO DB
     try {
         await prisma.assinatura.create({
             data: {
-                assinatura_img: requiscaoModel.assinatura_img,
-                notaFiscal: Number(requiscaoModel.notaFiscal),
-                responsavel: requiscaoModel.responsavel
+                assinatura_img: requiscaoModelAss.assinatura_img,
+                notaFiscal: Number(requiscaoModelAss.notaFiscal),
+                responsavel: requiscaoModelAss.responsavel
             }
         })
     } catch (error) {
@@ -31,27 +38,30 @@ app.post("/registrarAssinatura", async (req: Request, res: Response) => {
 })
 
 app.post("/registrarConfirmacao", async (req: Request, res: Response) => {
-    const {
-        cidade,entregaConcluida,
-        motorista,notaFiscal,obs
-    }: ModelConfirmacaoEntrega = req.body
+    const requiscaoModelConfir: ModelConfirmacaoEntrega = req.body
+
+    if(req.body.sec != process.env.SEC) {
+        return res.status(400).send({result: "Algo falta no sistema"})
+    }else if (req.body.setor != "confirmacao") {
+        return res.status(400).send({result: "Setor Errado"})
+    }
 
     //PROCESSO DB
     try {
         await prisma.confirmacaoEntrega.create({
             data: {
-                cidade: cidade,
-                entregaConcluida: entregaConcluida,
-                motorista: motorista,
-                notaFiscal: notaFiscal,
-                obs: obs,
+                cidade: requiscaoModelConfir.cidade,
+                entregaConcluida: requiscaoModelConfir.entregaConcluida,
+                motorista: requiscaoModelConfir.motorista,
+                notaFiscal: Number(requiscaoModelConfir.notaFiscal),
+                obs: requiscaoModelConfir.obs,
             }
-        })
+        }) 
     } catch (error) {
         res.status(400).send({result: error})
     } finally {
         res.status(201).send({result: "Criado Com Sucesso"})
-    }
+    } //*/
 })
 
 app.post("/registrarRetorno", async (req: Request, res: Response) => {
@@ -61,13 +71,19 @@ app.post("/registrarRetorno", async (req: Request, res: Response) => {
         placa
     }: ModelRetorno = req.body
 
+    if(req.body.sec != process.env.SEC) {
+        return res.status(400).send({result: "Algo falta no sistema"})
+    }else if (req.body.setor != "retorno") {
+        return res.status(400).send({result: "Setor Errado"})
+    }
+
     //PROCESSO DB
     try {
         await prisma.retorno.create({
             data: {
                 data: data,
                 hodometro: hodometro,
-                notaFiscal: notaFiscal,
+                notaFiscal: Number(notaFiscal),
                 obs: obs,
                 placa: placa
             }
