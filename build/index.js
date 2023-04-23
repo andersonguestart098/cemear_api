@@ -140,7 +140,7 @@ app.post("/registrarRetorno", function (req, res) { return __awaiter(void 0, voi
                 return [4 /*yield*/, prisma.retorno.create({
                         data: {
                             data: data,
-                            hodometro: hodometro,
+                            hodometro: Number(hodometro),
                             notaFiscal: Number(notaFiscal),
                             obs: obs,
                             placa: placa

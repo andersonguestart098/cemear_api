@@ -82,7 +82,7 @@ app.post("/registrarRetorno", async (req: Request, res: Response) => {
         await prisma.retorno.create({
             data: {
                 data: data,
-                hodometro: hodometro,
+                hodometro: Number(hodometro),
                 notaFiscal: Number(notaFiscal),
                 obs: obs,
                 placa: placa
