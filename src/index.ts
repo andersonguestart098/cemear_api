@@ -16,14 +16,6 @@ const prisma = new PrismaClient()
 app.post("/registrarAssinatura", async (req: Request, res: Response) => {
     const requiscaoModelAss: ModelAssinatura = req.body
 
-    if(req.body.sec != process.env.SEC) {
-        return res.status(400).send({result: "Algo falta no sistema"})
-    }else if (req.body.setor != "assinatura") {
-        return res.status(400).send({result: "Setor Errado"})
-    }
-
-    
-
     //PROCESSO DB
     const config: AxiosRequestConfig = {
         method: "post",
@@ -33,7 +25,7 @@ app.post("/registrarAssinatura", async (req: Request, res: Response) => {
           "Content-Type": "application/json",
         },
         data: {
-            notaFiscal: requiscaoModelAss.notaFiscal,
+            notaFiscal: Number(requiscaoModelAss.notaFiscal),
             responsavel: requiscaoModelAss.responsavel,
             assinatura_img: requiscaoModelAss.assinatura_img,            
             setor: "assinatura"
