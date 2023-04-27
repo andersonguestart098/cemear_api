@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import { ModelRetorno, ModelAssinatura, ModelConfirmacaoEntrega } from "./models/setoresInterfaceInfra"
 import bodyParser from "body-parser"
 import { PrismaClient } from "@prisma/client"
+import axios, { AxiosRequestConfig } from "axios"
 
 dotenv.config()
 
@@ -21,19 +22,31 @@ app.post("/registrarAssinatura", async (req: Request, res: Response) => {
         return res.status(400).send({result: "Setor Errado"})
     }
 
+    
+
     //PROCESSO DB
-    try {
-        await prisma.assinatura.create({
-            data: {
-                assinatura_img: requiscaoModelAss.assinatura_img,
-                notaFiscal: Number(requiscaoModelAss.notaFiscal),
-                responsavel: requiscaoModelAss.responsavel
-            }
-        })
-    } catch (error) {
-        res.status(400).send({result: error})
-    } finally {
+    const config: AxiosRequestConfig = {
+        method: "post",
+        url: process.env.URL_POST,
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+          "Content-Type": "application/json",
+        },
+        data: {
+            notaFiscal: requiscaoModelAss.notaFiscal,
+            responsavel: requiscaoModelAss.responsavel,
+            assinatura_img: requiscaoModelAss.assinatura_img,            
+            setor: "assinatura"
+        },
+      };
+
+      let response = await axios(config)
+
+      
+    if(response.status == 201 || response.status == 200) {
         res.status(201).send({result: "Criado Com Sucesso"})
+    }else {
+        res.status(400).send({result: "Ocorreu algum erro"})
     }
 })
 
@@ -47,29 +60,35 @@ app.post("/registrarConfirmacao", async (req: Request, res: Response) => {
     }
 
     //PROCESSO DB
-    try {
-        await prisma.confirmacaoEntrega.create({
-            data: {
-                cidade: requiscaoModelConfir.cidade,
-                entregaConcluida: requiscaoModelConfir.entregaConcluida,
-                motorista: requiscaoModelConfir.motorista,
-                notaFiscal: Number(requiscaoModelConfir.notaFiscal),
-                obs: requiscaoModelConfir.obs,
-            }
-        }) 
-    } catch (error) {
-        res.status(400).send({result: error})
-    } finally {
+    const config: AxiosRequestConfig = {
+        method: "post",
+        url: process.env.URL_POST,
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+          "Content-Type": "application/json",
+        },
+        data: {
+            notaFiscal: requiscaoModelConfir.notaFiscal,
+            motorista: requiscaoModelConfir.motorista,
+            cidade: requiscaoModelConfir.cidade,
+            entregaConcluida: requiscaoModelConfir.entregaConcluida,
+            obs: requiscaoModelConfir.obs,
+            setor: "confirmacao entrega"
+        },
+      };
+
+      let response = await axios(config)
+
+      
+    if(response.status == 201 || response.status == 200) {
         res.status(201).send({result: "Criado Com Sucesso"})
-    } //*/
+    }else {
+        res.status(400).send({result: "Ocorreu algum erro"})
+    }
 })
 
 app.post("/registrarRetorno", async (req: Request, res: Response) => {
-    const {
-        data,hodometro,
-        notaFiscal,obs,
-        placa
-    }: ModelRetorno = req.body
+    const retorno: ModelRetorno = req.body
 
     if(req.body.sec != process.env.SEC) {
         return res.status(400).send({result: "Algo falta no sistema"})
@@ -78,21 +97,32 @@ app.post("/registrarRetorno", async (req: Request, res: Response) => {
     }
 
     //PROCESSO DB
-    try {
-        await prisma.retorno.create({
-            data: {
-                data: data,
-                hodometro: Number(hodometro),
-                notaFiscal: Number(notaFiscal),
-                obs: obs,
-                placa: placa
-            }
-        })
-    } catch (error) {
-        res.status(400).send({result: error})
-    } finally {
+    const config: AxiosRequestConfig = {
+        method: "post",
+        url: process.env.URL_POST,
+        headers: {
+          "ngrok-skip-browser-warning": "69420",
+          "Content-Type": "application/json",
+        },
+        data: {
+            notaFiscal:retorno.notaFiscal,
+            placa: retorno.placa,
+            hodometro: retorno.hodometro,
+            data: retorno.data,
+            obs: retorno.obs,
+            setor: "retorno"
+        },
+      };
+
+      let response = await axios(config)
+
+      
+    if(response.status == 201 || response.status == 200) {
         res.status(201).send({result: "Criado Com Sucesso"})
+    }else {
+        res.status(400).send({result: "Ocorreu algum erro"})
     }
 })
 
-app.listen(process.env.PORT)
+
+app.listen(process.env.PORT, () => console.log("Iniciou"))

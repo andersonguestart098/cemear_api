@@ -43,13 +43,14 @@ var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var client_1 = require("@prisma/client");
+var axios_1 = __importDefault(require("axios"));
 dotenv_1.default.config();
 var app = (0, express_1.default)();
 app.use(body_parser_1.default.urlencoded({ extended: false }));
 app.use(body_parser_1.default.json());
 var prisma = new client_1.PrismaClient();
 app.post("/registrarAssinatura", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var requiscaoModelAss, error_1;
+    var requiscaoModelAss, config, response;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -60,32 +61,35 @@ app.post("/registrarAssinatura", function (req, res) { return __awaiter(void 0, 
                 else if (req.body.setor != "assinatura") {
                     return [2 /*return*/, res.status(400).send({ result: "Setor Errado" })];
                 }
-                _a.label = 1;
+                config = {
+                    method: "post",
+                    url: process.env.URL_POST,
+                    headers: {
+                        "ngrok-skip-browser-warning": "69420",
+                        "Content-Type": "application/json",
+                    },
+                    data: {
+                        notaFiscal: requiscaoModelAss.notaFiscal,
+                        responsavel: requiscaoModelAss.responsavel,
+                        assinatura_img: requiscaoModelAss.assinatura_img,
+                        setor: "assinatura"
+                    },
+                };
+                return [4 /*yield*/, (0, axios_1.default)(config)];
             case 1:
-                _a.trys.push([1, 3, 4, 5]);
-                return [4 /*yield*/, prisma.assinatura.create({
-                        data: {
-                            assinatura_img: requiscaoModelAss.assinatura_img,
-                            notaFiscal: Number(requiscaoModelAss.notaFiscal),
-                            responsavel: requiscaoModelAss.responsavel
-                        }
-                    })];
-            case 2:
-                _a.sent();
-                return [3 /*break*/, 5];
-            case 3:
-                error_1 = _a.sent();
-                res.status(400).send({ result: error_1 });
-                return [3 /*break*/, 5];
-            case 4:
-                res.status(201).send({ result: "Criado Com Sucesso" });
-                return [7 /*endfinally*/];
-            case 5: return [2 /*return*/];
+                response = _a.sent();
+                if (response.status == 201 || response.status == 200) {
+                    res.status(201).send({ result: "Criado Com Sucesso" });
+                }
+                else {
+                    res.status(400).send({ result: "Ocorreu algum erro" });
+                }
+                return [2 /*return*/];
         }
     });
 }); });
 app.post("/registrarConfirmacao", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var requiscaoModelConfir, error_2;
+    var requiscaoModelConfir, config, response;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -96,68 +100,74 @@ app.post("/registrarConfirmacao", function (req, res) { return __awaiter(void 0,
                 else if (req.body.setor != "confirmacao") {
                     return [2 /*return*/, res.status(400).send({ result: "Setor Errado" })];
                 }
-                _a.label = 1;
+                config = {
+                    method: "post",
+                    url: process.env.URL_POST,
+                    headers: {
+                        "ngrok-skip-browser-warning": "69420",
+                        "Content-Type": "application/json",
+                    },
+                    data: {
+                        notaFiscal: requiscaoModelConfir.notaFiscal,
+                        motorista: requiscaoModelConfir.motorista,
+                        cidade: requiscaoModelConfir.cidade,
+                        entregaConcluida: requiscaoModelConfir.entregaConcluida,
+                        obs: requiscaoModelConfir.obs,
+                        setor: "confirmacao entrega"
+                    },
+                };
+                return [4 /*yield*/, (0, axios_1.default)(config)];
             case 1:
-                _a.trys.push([1, 3, 4, 5]);
-                return [4 /*yield*/, prisma.confirmacaoEntrega.create({
-                        data: {
-                            cidade: requiscaoModelConfir.cidade,
-                            entregaConcluida: requiscaoModelConfir.entregaConcluida,
-                            motorista: requiscaoModelConfir.motorista,
-                            notaFiscal: Number(requiscaoModelConfir.notaFiscal),
-                            obs: requiscaoModelConfir.obs,
-                        }
-                    })];
-            case 2:
-                _a.sent();
-                return [3 /*break*/, 5];
-            case 3:
-                error_2 = _a.sent();
-                res.status(400).send({ result: error_2 });
-                return [3 /*break*/, 5];
-            case 4:
-                res.status(201).send({ result: "Criado Com Sucesso" });
-                return [7 /*endfinally*/];
-            case 5: return [2 /*return*/];
+                response = _a.sent();
+                if (response.status == 201 || response.status == 200) {
+                    res.status(201).send({ result: "Criado Com Sucesso" });
+                }
+                else {
+                    res.status(400).send({ result: "Ocorreu algum erro" });
+                }
+                return [2 /*return*/];
         }
     });
 }); });
 app.post("/registrarRetorno", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, data, hodometro, notaFiscal, obs, placa, error_3;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var retorno, config, response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
-                _a = req.body, data = _a.data, hodometro = _a.hodometro, notaFiscal = _a.notaFiscal, obs = _a.obs, placa = _a.placa;
+                retorno = req.body;
                 if (req.body.sec != process.env.SEC) {
                     return [2 /*return*/, res.status(400).send({ result: "Algo falta no sistema" })];
                 }
                 else if (req.body.setor != "retorno") {
                     return [2 /*return*/, res.status(400).send({ result: "Setor Errado" })];
                 }
-                _b.label = 1;
+                config = {
+                    method: "post",
+                    url: process.env.URL_POST,
+                    headers: {
+                        "ngrok-skip-browser-warning": "69420",
+                        "Content-Type": "application/json",
+                    },
+                    data: {
+                        notaFiscal: retorno.notaFiscal,
+                        placa: retorno.placa,
+                        hodometro: retorno.hodometro,
+                        data: retorno.data,
+                        obs: retorno.obs,
+                        setor: "retorno"
+                    },
+                };
+                return [4 /*yield*/, (0, axios_1.default)(config)];
             case 1:
-                _b.trys.push([1, 3, 4, 5]);
-                return [4 /*yield*/, prisma.retorno.create({
-                        data: {
-                            data: data,
-                            hodometro: Number(hodometro),
-                            notaFiscal: Number(notaFiscal),
-                            obs: obs,
-                            placa: placa
-                        }
-                    })];
-            case 2:
-                _b.sent();
-                return [3 /*break*/, 5];
-            case 3:
-                error_3 = _b.sent();
-                res.status(400).send({ result: error_3 });
-                return [3 /*break*/, 5];
-            case 4:
-                res.status(201).send({ result: "Criado Com Sucesso" });
-                return [7 /*endfinally*/];
-            case 5: return [2 /*return*/];
+                response = _a.sent();
+                if (response.status == 201 || response.status == 200) {
+                    res.status(201).send({ result: "Criado Com Sucesso" });
+                }
+                else {
+                    res.status(400).send({ result: "Ocorreu algum erro" });
+                }
+                return [2 /*return*/];
         }
     });
 }); });
-app.listen(process.env.PORT);
+app.listen(process.env.PORT, function () { return console.log("Iniciou"); });
