@@ -18,4 +18,4 @@ export interface ModelRetorno {
     hodometro: number
     data: string
     obs: string
-}
+} 
