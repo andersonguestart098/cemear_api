@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 
 app.get("/", (req: Request, res: Response) =>{
   const url = process.env.URL_POST ?? "Coloque URL_POST no ENV"
-  res.status(200).send(url)
+  res.status(200).json({url: url})
 });
 
 app.post("/registrarAssinatura", async (req: Request, res: Response) => {
