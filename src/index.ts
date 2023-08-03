@@ -14,9 +14,10 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.get("/", (req: Request, res: Response) =>
-  res.status(200).send("Tudo certo viado")
-);
+app.get("/", (req: Request, res: Response) =>{
+  const url = process.env.URL_POST ?? "Coloque URL_POST no ENV"
+  res.status(200).send(url)
+});
 
 app.post("/registrarAssinatura", async (req: Request, res: Response) => {
   const requiscaoModelAss: ModelAssinatura = req.body;
