@@ -7,12 +7,17 @@ import {
 } from "./models/setoresInterfaceInfra";
 import bodyParser from "body-parser";
 import axios, { AxiosRequestConfig } from "axios";
+import cors from "cors";
 
 dotenv.config();
+
+
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(cors())
 
 app.get("/", (req: Request, res: Response) =>{
   const url = process.env.URL_POST ?? "Coloque URL_POST no ENV"
